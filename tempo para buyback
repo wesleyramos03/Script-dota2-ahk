@@ -1,0 +1,15 @@
+LControl & ,::
+	Send, ^a
+	Send, ^c
+	Sleep, 100
+	variable := clipboard	
+	if(strlen(variable)<6){
+		StringSplit, time, variable, :,
+		s := time2
+		m1 := time1+8		
+		variable = Ele so vai ter Buyback em %m1%:%s% 		
+		Send, ^a
+		Send, %variable%
+		Clipboard := variable   ; update clipboard
+	}	
+return
