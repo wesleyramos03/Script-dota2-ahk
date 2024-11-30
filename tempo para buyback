@@ -1,15 +1,43 @@
 LControl & ,::
-	Send, ^a
-	Send, ^c
-	Sleep, 100
-	variable := clipboard	
-	if(strlen(variable)<6){
-		StringSplit, time, variable, :,
-		s := time2
-		m1 := time1+8		
-		variable = Ele so vai ter Buyback em %m1%:%s% 		
-		Send, ^a
-		Send, %variable%
-		Clipboard := variable   ; update clipboard
-	}	
+{
+    ; Seleciona e copia o conteúdo da caixa de texto
+    Send, ^a
+    Send, ^c
+    Sleep, 100
+
+    ; Obtém o conteúdo da área de transferência
+    variable := Clipboard
+
+    ; Verifica se o conteúdo copiado tem o formato MM:SS
+    if (StrLen(variable) < 6)
+    {
+        ; Verifica se o conteúdo é um tempo válido no formato MM:SS
+        if (RegExMatch(variable, "^\d{1,2}:\d{2}$"))
+        {
+            ; Divide os minutos e segundos
+            StringSplit, time, variable, :
+
+            ; Adiciona 8 minutos ao tempo original
+            m1 := time1 + 8  ; Aumenta os minutos em 8
+
+            ; Formata a nova mensagem
+            new_variable := Format("Ele só vai ter Buyback em {:02}:{:02}", m1, time2)
+
+            ; Substitui o texto atual pela nova mensagem
+            Clipboard := new_variable  ; Atualiza a área de transferência
+            Send, ^a
+            Send, %new_variable%   ; Envia o novo texto para a caixa de texto
+        }
+        else
+        {
+            ; Se o formato do tempo for inválido, exibe uma mensagem de erro
+            MsgBox, 48, Erro, O formato de tempo está incorreto. Por favor, copie um tempo válido no formato MM:SS.
+        }
+    }
+    else
+    {
+        ; Se a string for muito longa ou estiver em formato inválido
+        MsgBox, 48, Erro, O tempo copiado está em um formato inesperado.
+    }
+}
 return
