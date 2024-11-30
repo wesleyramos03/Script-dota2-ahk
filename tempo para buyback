@@ -1,15 +1,32 @@
 LControl & ,::
-	Send, ^a
-	Send, ^c
-	Sleep, 100
-	variable := clipboard	
-	if(strlen(variable)<6){
-		StringSplit, time, variable, :,
-		s := time2
-		m1 := time1+8		
-		variable = Ele so vai ter Buyback em %m1%:%s% 		
-		Send, ^a
-		Send, %variable%
-		Clipboard := variable   ; update clipboard
-	}	
+{
+    ; Seleciona e copia o conteúdo da caixa de texto
+    Send, ^a
+    Send, ^c
+    Sleep, 100
+
+    ; Obtém o conteúdo da área de transferência
+    variable := Clipboard
+
+    ; Verifica se o conteúdo copiado tem o formato esperado (MM:SS)
+    if (StrLen(variable) < 6 && RegExMatch(variable, "^\d{1,2}:\d{2}$"))
+    {
+        ; Divide os minutos e segundos
+        StringSplit, time, variable, :
+        m1 := time1 + 8  ; Adiciona 8 minutos ao tempo
+
+        ; Formata a nova mensagem
+        variable := Format("Ele só vai ter Buyback em {:02}:{:02}", m1, time2)
+
+        ; Substitui o texto atual pela nova mensagem
+        Send, ^a
+        Send, %variable%
+        Clipboard := variable  ; Atualiza a área de transferência
+    }
+    else
+    {
+        ; Se o formato for inválido, exibe uma mensagem de erro
+        MsgBox, 48, Erro, Por favor, copie um tempo no formato MM:SS.
+    }
+}
 return
